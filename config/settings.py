@@ -87,8 +87,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(ROOT_DIR.path('db.sqlite3')),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bidsproject',
+        'USER': 'bidsdatabaseuser',
+        'PASSWORD': 'bidsdatabasepass',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
