@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 
 
 class Channel(models.Model):
@@ -39,8 +40,8 @@ class Campaign(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        bid_type = bid_type.upper()
-        if self.bid_type not in self.channel.bidtypes:
-            raise ValidationError("Please, specify one of the bid types that belongs to the selected channel: {}",
-            self.channel.bid_types)
+        self.bid_type = self.bid_type.upper()
+        if self.bid_type not in self.channel.bid_types:
+            raise ValidationError("Please, specify one of the bid types that belongs to the selected channel: {}"
+            .format(self.channel.bid_types))
         super(Campaign, self).save(*args, **kwargs)
