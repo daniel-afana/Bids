@@ -25,6 +25,10 @@ class Channel(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.bid_types = list(map(str.upper, self.bid_types))
+        super(Channel, self).save(*args, **kwargs)
+
 
 class Campaign(models.Model):
     
@@ -45,3 +49,5 @@ class Campaign(models.Model):
             raise ValidationError("Please, specify one of the bid types that belongs to the selected channel: {}"
             .format(self.channel.bid_types))
         super(Campaign, self).save(*args, **kwargs)
+
+
