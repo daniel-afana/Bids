@@ -13,15 +13,9 @@ class ChannelViewSet(viewsets.ModelViewSet):
 
     queryset = Channel.objects.all()
     serializer_class = ChannelSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save()
+    
     
 class CampaignViewSet(viewsets.ModelViewSet):
 
     queryset = Campaign.objects.all()
     serializer_class = CampaignSerializer
-
-    def perform_create(self, serializer):
-        serializer.save()
