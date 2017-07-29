@@ -15,11 +15,6 @@ class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer
     # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    @detail_route()
-    def get_link (self, request, *args, **kwargs):
-        channel = self.get_object()
-        return Response(channel)
-
     def perform_create(self, serializer):
         serializer.save()
     
