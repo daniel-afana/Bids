@@ -1,15 +1,12 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from bids_app.models import Channel, Campaign
 from bids_app.serializers import ChannelSerializer, CampaignSerializer
-from rest_framework.test import APIClient, APIRequestFactory
+from rest_framework.test import APIClient, APIRequestFactory, APITestCase
 from rest_framework.request import Request
 from rest_framework import status
 from django.core.urlresolvers import reverse
 from bids_app.views import ChannelViewSet, CampaignViewSet
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 import pdb
-from rest_framework.test import APITestCase
 
 
 class ModelTestCase(TestCase):
@@ -39,15 +36,12 @@ class ModelTestCase(TestCase):
         self.assertIsInstance(test_campaign, Campaign)
 
 
-class TestCaseTempl(TestCase):
+class APITestCaseTempl(APITestCase):
 
     client = APIClient()
     factory = APIRequestFactory()
     chan_pk = 1
     camp_pk = 1
-
-    def api_authentication(self):
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
     def setUp(self):
 
@@ -75,7 +69,7 @@ class TestCaseTempl(TestCase):
         self.camp_pk = camp1.pk
 
 
-class GetListTest(TestCaseTempl):
+class GetListTest(APITestCaseTempl):
 
     """ Channels and campaigns list """
 
@@ -112,7 +106,7 @@ class GetListTest(TestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class GetDetailTest(TestCaseTempl):
+class GetDetailTest(APITestCaseTempl):
 
     """ Detail page for channel and campaign """
 
@@ -151,7 +145,7 @@ class GetDetailTest(TestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class CreateChannelListTestCase(TestCaseTempl):
+class CreateChannelListTestCase(APITestCaseTempl):
 
     def setUp(self):
 
@@ -170,7 +164,7 @@ class CreateChannelListTestCase(TestCaseTempl):
         self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
 
 
-class CreateCampaignListTestCase(TestCaseTempl):
+class CreateCampaignListTestCase(APITestCaseTempl):
 
     def test_can_create_a_campaign_list(self):
 
@@ -178,7 +172,7 @@ class CreateCampaignListTestCase(TestCaseTempl):
             'name': 'Test campaign 3',
             'channel': '/channels/{}/'.format(self.chan1.pk),
             'bid': 3,
-            'bid_type':["CPC"]
+            'bid_type': "CPC"
             }
         
         response = self.client.post(
@@ -190,40 +184,7 @@ class CreateCampaignListTestCase(TestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-class ApiTestCaseTempl(APITestCase):
-
-    client = APIClient()
-    factory = APIRequestFactory()
-    chan_pk = 1
-    camp_pk = 1
-
-    def setUp(self):
-
-        self.chan1 = Channel.objects.create(
-            name="Test channel name",
-            slug="Test channel slug",
-            bid_types=(["CPM", "CPC"])
-        )
-
-        self.chan_pk = self.chan1.pk
-
-        Channel.objects.create(
-            name="Test channel 2",
-            slug="Test channel 2 slug",
-            bid_types=(["CPI"])
-        )
-
-        camp1 = Campaign.objects.create(
-            name="Test campaign name",
-            channel=self.chan1,
-            bid = 1,
-            bid_type = ("CPM")
-        )
-
-        self.camp_pk = camp1.pk
-
-
-class UpdateChannelTestCase(ApiTestCaseTempl):
+class UpdateChannelTestCase(APITestCaseTempl):
 
     def test_valid_update_channel(self):
 
@@ -257,7 +218,7 @@ class UpdateChannelTestCase(ApiTestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateCampaignTestCase(ApiTestCaseTempl):
+class UpdateCampaignTestCase(APITestCaseTempl):
 
     def test_valid_update_campaign(self):
 
@@ -294,7 +255,7 @@ class UpdateCampaignTestCase(ApiTestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteChannelTestCase(ApiTestCaseTempl):
+class DeleteChannelTestCase(APITestCaseTempl):
 
     def test_valid_delete_channel(self):
 
@@ -313,7 +274,7 @@ class DeleteChannelTestCase(ApiTestCaseTempl):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class DeleteCampaignlTestCase(ApiTestCaseTempl):
+class DeleteCampaignlTestCase(APITestCaseTempl):
 
     def test_valid_delete_campaign(self):
 
